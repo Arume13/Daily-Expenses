@@ -42,7 +42,7 @@ dependencies:
   shared_preferences: ^2.3.4
 
   # Charts
-  fl_chart: ^0.70.2
+  fl_chart: ^1.2.0
 
   # Date formatting
   intl: ^0.20.2
