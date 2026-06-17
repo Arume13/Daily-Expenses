@@ -1,0 +1,127 @@
+workflows:
+  # ─────────────────────────────────────────────
+  # WORKFLOW 1: Android Debug APK
+  # ─────────────────────────────────────────────
+  android-debug:
+    name: Android Debug APK
+    max_build_duration: 30
+    environment:
+      flutter: stable
+      java: 17
+    scripts:
+      - name: Get Flutter dependencies
+        script: flutter pub get
+
+      - name: Analyze code
+        script: flutter analyze --no-fatal-infos
+
+      - name: Build debug APK
+        script: flutter build apk --debug
+
+    artifacts:
+      - build/app/outputs/flutter-apk/app-debug.apk
+
+    publishing:
+      email:
+        recipients:
+          - ajisuatmajipras2802@gmail.com   # Ganti dengan email kamu
+        notify:
+          success: true
+          failure: true
+
+  # ─────────────────────────────────────────────
+  # WORKFLOW 2: Android Release APK (unsigned)
+  # ─────────────────────────────────────────────
+  android-release:
+    name: Android Release APK (unsigned)
+    max_build_duration: 30
+    environment:
+      flutter: stable
+      java: 17
+    scripts:
+      - name: Get Flutter dependencies
+        script: flutter pub get
+
+      - name: Analyze code
+        script: flutter analyze --no-fatal-infos
+
+      - name: Build release APK (unsigned)
+        script: flutter build apk --release
+
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
+
+    publishing:
+      email:
+        recipients:
+          - ajisuatmajipras2802@gmail.com   # Ganti dengan email kamu
+        notify:
+          success: true
+          failure: true
+
+  # ─────────────────────────────────────────────
+  # WORKFLOW 3: iOS Debug (Simulator)
+  # Tidak perlu Apple Developer Account
+  # ─────────────────────────────────────────────
+  ios-simulator:
+    name: iOS Simulator Build
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Get Flutter dependencies
+        script: flutter pub get
+
+      - name: Analyze code
+        script: flutter analyze --no-fatal-infos
+
+      - name: Build iOS for simulator (no signing needed)
+        script: |
+          flutter build ios --debug --simulator --no-codesign
+
+    artifacts:
+      - build/ios/iphonesimulator/Runner.app
+
+    publishing:
+      email:
+        recipients:
+          - ajisuatmajipras2802@gmail.com   # Ganti dengan email kamu
+        notify:
+          success: true
+          failure: true
+
+  # ─────────────────────────────────────────────
+  # WORKFLOW 4: iOS IPA (perlu Apple Developer)
+  # Untuk install di device fisik lewat TestFlight
+  # ─────────────────────────────────────────────
+  ios-device:
+    name: iOS Device IPA (Ad Hoc)
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      ios_signing:
+        distribution_type: ad_hoc          # Bisa juga: development
+        bundle_identifier: com.example.flutterApplication1   # Sesuaikan
+    scripts:
+      - name: Get Flutter dependencies
+        script: flutter pub get
+
+      - name: Build IPA
+        script: |
+          flutter build ipa --release \
+            --export-options-plist=/Users/builder/export_options.plist
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+
+    publishing:
+      email:
+        recipients:
+          - ajisuatmajipras2802@gmail.com
+        notify:
+          success: true
+          failure: true
